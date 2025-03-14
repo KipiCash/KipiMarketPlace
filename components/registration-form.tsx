@@ -10,6 +10,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Loader2 } from "lucide-react"
+import { db, addDoc, collection } from "../lib/firebaseConfig"; // Ajusta la ruta según tu estructura
+
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -27,7 +29,7 @@ const formSchema = z.object({
   userType: z.enum(["customer", "business"], {
     required_error: "Por favor seleccione que tipo de persona es",
   }),
-    businessType: z.string().optional(),
+  businessType: z.string().optional(),
 })
   .superRefine((data, ctx) => {
     // Accedemos directamente a los valores del formulario a través de `data`
@@ -44,7 +46,7 @@ const formSchema = z.object({
       }
     }
 
-})
+  })
 
 
 export function RegistrationForm() {
@@ -64,32 +66,28 @@ export function RegistrationForm() {
   })
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
-    // Simular llamada a API
     try {
-      // Aquí deberías hacer la llamada a tu API para guardar los datos en la base de datos.
-      // Ejemplo con fetch:
-      // const response = await fetch('/api/register', {
-      //   method: 'POST',
-      //   body: JSON.stringify(values),
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      // })
-      // const data = await response.json()
-      // if (data.success) {
-      //   setIsSuccess(true)
-      // }
+      // Agregar los datos al Firestore
+      const docRef = await addDoc(collection(db, "registrations"), {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        phone: values.phone,
+        userType: values.userType,
+        businessType: values.userType === "business" ? values.businessType : null, // Solo almacenar si es negocio
+      });
 
-      console.log(values); // Para simular que los datos han sido enviados
-      setIsSubmitting(false)
-      setIsSuccess(true)
+      console.log("Documento escrito con ID: ", docRef.id);
+      setIsSubmitting(false);
+      setIsSuccess(true);
     } catch (error) {
-      console.error("Error:", error)
-      setIsSubmitting(false)
+      console.error("Error:", error);
+      setIsSubmitting(false);
     }
-  }
+  };
+
 
   if (isSuccess) {
     return (
@@ -111,8 +109,8 @@ export function RegistrationForm() {
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
         </div>
-        <h3 className="text-xl font-bold">Registration Successful!</h3>
-        <p className="text-muted-foreground">Thank you for registering. We'll be in touch soon with next steps.</p>
+        <h3 className="text-xl font-bold">¡Registro exitoso!</h3>
+        <p className="text-muted-foreground">Gracias por tu interes, pronto nos comunicaremos contigo.</p>
         <Button
           variant="outline"
           onClick={() => {
@@ -139,7 +137,7 @@ export function RegistrationForm() {
               <FormItem>
                 <FormLabel>Nombres</FormLabel>
                 <FormControl>
-                  <Input placeholder="Nombres" {...field} />
+                <Input placeholder="Nombres" {...field} value={field.value || ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -153,7 +151,7 @@ export function RegistrationForm() {
               <FormItem>
                 <FormLabel>Apellidos</FormLabel>
                 <FormControl>
-                  <Input placeholder="Apellidos" {...field} />
+                <Input placeholder="Apellidos" {...field} value={field.value || ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
