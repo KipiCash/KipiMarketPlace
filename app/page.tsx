@@ -144,7 +144,7 @@ export default function Home() {
         <div className="container px-4 md:px-6">
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
             <div className="flex justify-center lg:justify-center order-last lg:order-first">
-              <div className="relative h-[500px] w-[500px] sm:h-[400px] sm:w-[400px]">
+              <div className="relative h-[300px] w-[300px] sm:h-[350px] sm:w-[350px]">
                 <Image
                   src="/negocios.png?height=350&width=350"
                   alt="Mejora ventas"

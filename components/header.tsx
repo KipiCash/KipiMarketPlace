@@ -48,18 +48,18 @@ export function Header() {
                 className="text-sm font-medium hover:text-primary transition-colors"
                 onClick={() => setIsOpen(false)}
               >
-                For Customers
+                Para clientes
               </Link>
               <Link
                 href="#businesses"
                 className="text-sm font-medium hover:text-primary transition-colors"
                 onClick={() => setIsOpen(false)}
               >
-                For Businesses
+                Para negocios
               </Link>
               <Button asChild>
                 <Link href="#register" onClick={() => setIsOpen(false)}>
-                  Get Started
+                  Quiero unirme
                 </Link>
               </Button>
             </nav>
